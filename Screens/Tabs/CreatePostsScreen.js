@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Camera, FlashMode } from "expo-camera";
 import * as MediaLibrary from 'expo-media-library';
+import * as Location from 'expo-location';
 
 
 // import icons
@@ -26,17 +27,19 @@ export default function CreatePostsScreen({ }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [photoSource, setPhotoSource] = useState(null);
+  const [location, setLocation] = useState(null);
   
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
+      const camera = await Camera.requestCameraPermissionsAsync();
+      const location = await Location.requestForegroundPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
 
-      setHasPermission(status === "granted");
+      setHasPermission(camera.status === "granted" && location.status ==="granted");
     })();
   }, []);
 
-  let enabled = label.length > 0 && place.length > 0;
+  let enabled = label.length > 0 && place.length > 0 && hasPermission;
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -48,6 +51,13 @@ export default function CreatePostsScreen({ }) {
       const { uri } = await cameraRef.takePictureAsync();
       if (uri) { setPhotoSource(uri) };
       await MediaLibrary.createAssetAsync(uri);
+
+      let location = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setLocation(coords);
     }
   };
 
@@ -56,12 +66,14 @@ export default function CreatePostsScreen({ }) {
     if (enabled) {
       setLabel("");
       setPlace("");
-      console.log("label:", label, "place: ", place);      
+      setPhotoSource(null);
+      setLocation(null);
+      console.log("label:", label, "place: ", place, "location: ", location);      
     }
   };
 
   if (hasPermission === null) { return <View /> };
-  if (hasPermission === false) { return <Text>No access to camera</Text> };
+  if (hasPermission === false) { return <Text>Permission to access the camera or location was denied  activeOpacity</Text> };
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
