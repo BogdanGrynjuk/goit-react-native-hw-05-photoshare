@@ -32,7 +32,7 @@ export default function PostsScreen() {
           <Text style={{ ...styles.textLink, color: "#BDBDBD", textDecorationLine: "none" }}>0</Text>
         </TouchableOpacity>
         {/* link to map */}
-        <TouchableOpacity style={styles.postLink} activeOpacity={0.8} onPress={() => navigation.navigate("Map")}>
+        <TouchableOpacity style={styles.postLink} activeOpacity={0.8} onPress={() => navigation.navigate("Map", {location: item.location, label: item.label, place: item.place})}>
           <Feather name="map-pin" size={24} color="#BDBDBD" />
           <Text style={styles.textLink}>{item.place}</Text>
         </TouchableOpacity>
