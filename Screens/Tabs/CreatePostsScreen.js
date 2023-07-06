@@ -13,6 +13,7 @@ import {
 import { Camera, FlashMode } from "expo-camera";
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
+import { useNavigation } from "@react-navigation/native";
 
 
 // import icons
@@ -38,6 +39,8 @@ export default function CreatePostsScreen({ }) {
       setHasPermission(camera.status === "granted" && location.status ==="granted");
     })();
   }, []);
+
+  const navigation = useNavigation();
 
   let enabled = label.length > 0 && place.length > 0 && hasPermission;
 
@@ -68,7 +71,7 @@ export default function CreatePostsScreen({ }) {
       setPlace("");
       setPhotoSource(null);
       setLocation(null);
-      console.log("label:", label, "place: ", place, "location: ", location);      
+      navigation.navigate("Posts", {label, place, photoSource, location})      
     }
   };
 
@@ -103,6 +106,7 @@ export default function CreatePostsScreen({ }) {
               }
               <TouchableOpacity
                 style={styles.btnSnapshot}
+                activeOpacity={0.8}
                 onPress={takePhoto}
               >
                 <MaterialIcons name="photo-camera" size={30} color={"#BDBDBD"} />
