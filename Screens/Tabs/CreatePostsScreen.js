@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -8,7 +8,11 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Image,
 } from 'react-native';
+import { Camera, FlashMode } from "expo-camera";
+import * as MediaLibrary from 'expo-media-library';
+
 
 // import icons
 import { MaterialIcons } from '@expo/vector-icons';
@@ -19,23 +23,45 @@ export default function CreatePostsScreen({ }) {
   const [label, setLabel] = useState("");
   const [place, setPlace] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [cameraRef, setCameraRef] = useState(null);
+  const [photoSource, setPhotoSource] = useState(null);
+  
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+  }, []);
 
   let enabled = label.length > 0 && place.length > 0;
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
-    Keyboard.dismiss()
+    Keyboard.dismiss();
+  };
+
+  const takePhoto = async () => {
+    if (cameraRef) {
+      const { uri } = await cameraRef.takePictureAsync();
+      if (uri) { setPhotoSource(uri) };
+      await MediaLibrary.createAssetAsync(uri);
+    }
   };
 
   const onSubmit = () => {
     keyboardHide();
     if (enabled) {
       setLabel("");
-      setPlace("")
+      setPlace("");
       console.log("label:", label, "place: ", place);      
     }
   };
 
+  if (hasPermission === null) { return <View /> };
+  if (hasPermission === false) { return <Text>No access to camera</Text> };
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -45,9 +71,31 @@ export default function CreatePostsScreen({ }) {
         <View style={styles.photoContent}>
           {/* camera */}
           <View style={styles.cameraContainer}>
-            <TouchableOpacity style={styles.btnSnapshot}>
-              <MaterialIcons name="photo-camera" size={30} color={"#BDBDBD"} />
-            </TouchableOpacity>
+            <Camera
+              style={styles.camera}
+              ref={setCameraRef}
+              flashMode={FlashMode.auto}
+            >
+              {photoSource &&
+                <View style={styles.previewPhotoContainer}>
+                  <Image
+                    source={{ uri: photoSource }}
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      resizeMode: "cover"
+                    }}
+                  />
+
+                </View>
+              }
+              <TouchableOpacity
+                style={styles.btnSnapshot}
+                onPress={takePhoto}
+              >
+                <MaterialIcons name="photo-camera" size={30} color={"#BDBDBD"} />
+              </TouchableOpacity>
+            </Camera>
           </View>
           {/* uploader */}
           <TouchableOpacity
@@ -125,6 +173,7 @@ export default function CreatePostsScreen({ }) {
               height: 40,
               width: 70,
               padding: 8,
+
               alignSelf: "center",
               backgroundColor: "#F6F6F6"
             }}
@@ -155,15 +204,27 @@ const styles = StyleSheet.create({
   },
 
   cameraContainer: {
-    position: "relative",
-    justifyContent: "center",
-    alignItems: "center",
     width: "100%",
     height: 240,
     backgroundColor: "#F6F6F6",
     borderColor: "#E8E8E8",
     borderWidth: 1,
     borderRadius: 8,
+    overflow: "hidden"
+  },
+
+  camera: {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  previewPhotoContainer: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
   },
 
   btnSnapshot: {

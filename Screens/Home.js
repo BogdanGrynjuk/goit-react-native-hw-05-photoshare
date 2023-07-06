@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native";
 
 import { Feather } from '@expo/vector-icons';
 
-import PostsScreen from "./Tabs/PostsScreen";
+import PostsScreenStack from "./Tabs/PostsScreenStack";
 import ProfileScreen from "./Tabs/ProfileScreen";
 import CreatePostsScreen from "./Tabs/CreatePostsScreen";
 
@@ -38,8 +38,8 @@ export default function Home() {
       }}
     >
       <Tabs.Screen
-        name="Posts"
-        component={PostsScreen}
+        name="PostsStack"
+        component={PostsScreenStack}
         options={{
           headerTitle: "Публікації",
           headerTitleAlign: "center",
