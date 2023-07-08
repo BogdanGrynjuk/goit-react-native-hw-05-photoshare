@@ -27,12 +27,30 @@ export default function PostsScreen() {
       {/* links */}
       <View style={styles.postControls}>
         {/* link to comments */}
-        <TouchableOpacity style={styles.postLink} activeOpacity={0.8} onPress={() => navigation.navigate("Comments")}>
+        <TouchableOpacity
+          style={styles.postLink}
+          activeOpacity={0.8}
+          onPress={() => {
+            navigation.navigate(
+              "Comments",
+              { photoSource: item.photoSource }
+            )
+          }}
+        >
           <Feather name="message-circle" size={24} color="#BDBDBD" style={{ transform: [{ rotateY: '180deg' }] }} />
           <Text style={{ ...styles.textLink, color: "#BDBDBD", textDecorationLine: "none" }}>0</Text>
         </TouchableOpacity>
         {/* link to map */}
-        <TouchableOpacity style={styles.postLink} activeOpacity={0.8} onPress={() => navigation.navigate("Map", {location: item.location, label: item.label, place: item.place})}>
+        <TouchableOpacity
+          style={styles.postLink}
+          activeOpacity={0.8}
+          onPress={() => {
+            navigation.navigate(
+              "Map",
+              { location: item.location, label: item.label, place: item.place }
+            )
+          }}
+        >
           <Feather name="map-pin" size={24} color="#BDBDBD" />
           <Text style={styles.textLink}>{item.place}</Text>
         </TouchableOpacity>

@@ -1,80 +1,34 @@
-import { useState } from "react";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 
 import { Feather } from '@expo/vector-icons';
 
-import PostsScreenStack from "./Tabs/PostsScreenStack";
-import ProfileScreen from "./Tabs/ProfileScreen";
-import CreatePostsScreen from "./Tabs/CreatePostsScreen";
+import PostScreenTabs from "./Stack/PostScreenTabs";
+import MapScreen from "./Stack/MapScreen";
+import CommentsScreen from "./Stack/CommentsScreen";
 
-const Tabs = createBottomTabNavigator();
+const PostsStack = createStackNavigator();
 
 export default function Home() {
-
-  const [isChangedIcon, setIsChangedIcon] = useState(false);
   const navigation = useNavigation();
 
   return (
-    <Tabs.Navigator
-      initialRouteName="Posts"
+    <PostsStack.Navigator
+      initialRouteName="PostsTabs"
       screenOptions={{
-        tabBarShowLabel: false,
-        tabBarStyle: {
-          height: 80,
-          paddingTop: 10,
-          paddingBottom: 25,
-          backgroundColor: "#ffffff",
-          shadowColor: "rgba(0, 0, 0, 0.3)",
-          shadowOffset: "0px 0.5px 0px"
-        },
         headerStyle: {
           backgroundColor: "#ffffff",
           height: 80,
           shadowColor: "rgba(0, 0, 0, 0.3)",
           shadowOffset: "0px 0.5px 0px"
-        }
-      }}
-    >
-      <Tabs.Screen
-        name="PostsStack"
-        component={PostsScreenStack}
+        }}}>
+      <PostsStack.Screen name="PostsTabs" component={PostScreenTabs} options={{headerShown: false}}/>
+      <PostsStack.Screen
+        name="Map"
+        component={MapScreen}
         options={{
-          headerTitle: "Публікації",
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: "#212121",
-            fontSize: 18,
-            fontFamily: "Roboto-Medium",
-            fontWeight: 500
-          },
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 20 }}
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate("Login")}
-            >
-              <Feather name="log-out" size={25} color="#BDBDBD" />
-            </TouchableOpacity>
-          ),
-          tabBarButton: (props) =>
-            <TouchableOpacity
-              {...props}
-              activeOpacity={0.8}
-              onPress={() => {
-                setIsChangedIcon(false);
-                navigation.navigate("Posts");
-              }}
-            />,
-          tabBarIcon: ({ focused, size, color }) => <Feather name="grid" size={size} color="#BDBDBD" />,         
-        }}
-      />
-      <Tabs.Screen
-        name="CreatePosts"
-        component={CreatePostsScreen}
-        options={{
-          headerTitle: "Створити публікацію",
+          headerTitle: "Карта",
           headerTitleAlign: "center",
           headerTitleStyle: {
             color: "#212121",
@@ -86,65 +40,36 @@ export default function Home() {
             <TouchableOpacity
               style={{ marginLeft: 20 }}
               activeOpacity={0.8}
-              onPress={() => navigation.navigate("Posts")}
+              onPress={() => navigation.navigate("PostsTabs")}
             >
               <Feather name="arrow-left" size={30} color="#BDBDBD" />
             </TouchableOpacity>
           ),
-          tabBarStyle: { display: 'none' },
-          tabBarButton: (props) =>
-            <TouchableOpacity
-              {...props}
-              style={{
-                backgroundColor: '#FF6C00',
-                width: 70,
-                height: 40,
-                borderRadius: 50
-              }}
-              activeOpacity={0.8}
-              onPress={() => {
-                isChangedIcon 
-                  ? navigation.navigate("Profile")
-                  : navigation.navigate("CreatePosts")              
-              }}
-            />,
-          tabBarIcon: ({ focused, size, color }) => {
-            return (
-              isChangedIcon
-                ? <Feather name="user" size={size} color="#FFFFFF" />              
-                : <Feather name="plus" size={size} color="#FFFFFF" />
-            )
-          },          
         }}
       />
-      <Tabs.Screen
-        name="Profile"
-        component={ProfileScreen}
+      <PostsStack.Screen
+        name="Comments"
+        component={CommentsScreen}
         options={{
-          headerShown: false,
-          tabBarButton: (props) =>
-            <TouchableOpacity
-              {...props}
-              activeOpacity={0.8}
-              onPress={() => {
-                if (isChangedIcon) {
-                  navigation.navigate("CreatePosts");
-                  setIsChangedIcon(false);
-                } else {
-                  setIsChangedIcon(true);
-                  navigation.navigate("Profile");
-                }  
-              }}
-            />,
-          tabBarIcon: ({ focused, size, color }) => {
-            return (
-              isChangedIcon
-              ? <Feather name="plus" size={size} color="#BDBDBD" />
-              : <Feather name="user" size={size} color="#BDBDBD" />
-            );
+          headerTitle: "Коментарі",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            color: "#212121",
+            fontSize: 18,
+            fontFamily: "Roboto-Medium",
+            fontWeight: 500
           },
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 20 }}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate("PostsTabs")}
+            >
+              <Feather name="arrow-left" size={30} color="#BDBDBD" />
+            </TouchableOpacity>
+          ),
         }}
       />
-    </Tabs.Navigator>
+    </PostsStack.Navigator>   
   );
 };

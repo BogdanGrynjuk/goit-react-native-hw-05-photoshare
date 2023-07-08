@@ -10,8 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
-  TouchableOpacity,  
-  TouchableWithoutFeedback
+  TouchableOpacity,
 } from "react-native";
 
 export default function LoginScreen() {
@@ -19,136 +18,102 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
   const [isVisiblePassword, setIsVisiblePassword] = useState(false);
 
-  const navigation = useNavigation();
-
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-  };
+  const navigation = useNavigation();  
 
   const onSubmit = () => {
     console.log(`email: ${email}, password: ${password}`);
     setEmail('');
     setPassword('');
-    keyboardHide();
+    Keyboard.dismiss();
     navigation.navigate("Home", {email: email, password: password});
   }
   
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-
-      <View style={styles.container}>
-        {/* background */}
-        <ImageBackground
-          source={require("../assets/images/image-bg.jpg")}
-          style={styles.imageBackground}
-        >
+    <View style={styles.container}>
+      {/* background */}
+      <ImageBackground
+        source={require("../assets/images/image-bg.jpg")}
+        style={styles.imageBackground}
+      >
         
-          <View style={styles.wrapper}>
+        <View style={styles.wrapper}>
 
-            <View>
-              <Text style={styles.formTitle}>Увійти</Text>
-            </View>
-            {/* form */}
-            <View style={styles.form}>
-              <KeyboardAvoidingView
-                behavior={Platform.OS == "ios" ? "padding" : 0}
-              >
-                {/* input email */}
-                <View>
-                  <TextInput
-                    style={{
-                      ...styles.input,
-                      borderColor: isFocusedEmail ? "#FF6C00" : "#E8E8E8",
-                      backgroundColor: isFocusedEmail ? '#FFFFFF' : "#F6F6F6",
-                      color: "#212121",
-                    }}
-                    placeholder="Адреса електронної пошти"
-                    onFocus={() => {
-                      setIsFocusedEmail(true);
-                      setIsShowKeyboard(true);
-                    }}
-                    onBlur={() => {
-                      setIsFocusedEmail(false);
-                      setIsShowKeyboard(false);
-                    }}
-                    value={email}
-                    onChangeText={setEmail}
-                  />
-                </View>
-                {/* input password */}
-                <View style={{ position: "relative" }}>
-                  <TextInput
-                    style={{
-                      ...styles.input,
-                      borderColor: isFocusedPassword ? "#FF6C00" : "#E8E8E8",
-                      backgroundColor: isFocusedPassword ? "#FFFFFF" : "#F6F6F6",
-                      color: "#212121",
-                    }}
-                    placeholder='Пароль'
-                    secureTextEntry={!isVisiblePassword}
-                    onFocus={() => {
-                      setIsFocusedPassword(true);
-                      setIsShowKeyboard(true);
-                    }}
-                    onBlur={() => {
-                      setIsFocusedPassword(false);
-                      setIsShowKeyboard(false);
-                    }}
-                    value={password}
-                    onChangeText={setPassword}
-                  />
-                  <TouchableOpacity
-                    style={styles.btnToggle}
-                    activeOpacity={0.8}
-                    onPressIn={() => setIsVisiblePassword(true)}
-                    onPressOut={() => setIsVisiblePassword(false)}
-                  >
-                    <Text style={styles.btnToggleText}>Показати</Text>
-                  </TouchableOpacity>
-                </View>
-              </KeyboardAvoidingView>
-              {
-                !isShowKeyboard
-                  ? <View>
-                    {/* btn sign in */}
-                    <TouchableOpacity
-                      style={styles.btn}
-                      activeOpacity={0.8}
-                      onPress={onSubmit}
-                    >
-                      <Text style={styles.btnTitle}>Увійти</Text>
-                    </TouchableOpacity>
-                    {/* link */}
-                    <TouchableOpacity
-                      style={styles.link}
-                      activeOpacity={0.8}
-                      onPress={() => navigation.navigate("Register")}
-                    >
-                      <Text style={styles.linkText}>
-                        Немає акаунту? Зареєструватися
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  : null
-              }
-              
-            </View>
-
-            
-          
+          <View>
+            <Text style={styles.formTitle}>Увійти</Text>
           </View>
-        
-        </ImageBackground>
-
-      </View>
-
-    </TouchableWithoutFeedback>
+          {/* form */}
+          <View style={styles.form}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS == "ios" ? "padding" : 'height'}
+            >
+              {/* input email */}
+              <View>
+                <TextInput
+                  style={{
+                    ...styles.input,
+                    borderColor: isFocusedEmail ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocusedEmail ? '#FFFFFF' : "#F6F6F6",
+                    color: "#212121",
+                  }}
+                  placeholder="Адреса електронної пошти"
+                  onFocus={() => setIsFocusedEmail(true)}
+                  onBlur={() => setIsFocusedEmail(false)}
+                  value={email}
+                  onChangeText={setEmail}
+                />
+              </View>
+              {/* input password */}
+              <View style={{ position: "relative" }}>
+                <TextInput
+                  style={{
+                    ...styles.input,
+                    borderColor: isFocusedPassword ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocusedPassword ? "#FFFFFF" : "#F6F6F6",
+                    color: "#212121",
+                  }}
+                  placeholder='Пароль'
+                  secureTextEntry={!isVisiblePassword}
+                  onFocus={() => setIsFocusedPassword(true)}
+                  onBlur={() => setIsFocusedPassword(false)}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity
+                  style={styles.btnToggle}
+                  activeOpacity={0.8}
+                  onPressIn={() => setIsVisiblePassword(true)}
+                  onPressOut={() => setIsVisiblePassword(false)}
+                >
+                  <Text style={styles.btnToggleText}>Показати</Text>
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>              
+            {/* btn sign in */}
+            <TouchableOpacity
+              style={styles.btn}
+              activeOpacity={0.8}
+              onPress={onSubmit}
+            >
+              <Text style={styles.btnTitle}>Увійти</Text>
+            </TouchableOpacity>
+            {/* link */}
+            <TouchableOpacity
+              style={styles.link}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate("Register")}
+            >
+              <Text style={styles.linkText}>
+                Немає акаунту? Зареєструватися
+              </Text>
+            </TouchableOpacity>    
+          </View>
+        </View>
+      </ImageBackground>
+    </View>
   );
 };
 

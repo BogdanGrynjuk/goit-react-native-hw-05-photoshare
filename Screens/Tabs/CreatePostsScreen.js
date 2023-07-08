@@ -7,13 +7,12 @@ import {
   TextInput,
   Keyboard,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
   Image,
 } from 'react-native';
 import { Camera, FlashMode } from "expo-camera";
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 
 // import icons
@@ -24,7 +23,6 @@ export default function CreatePostsScreen({ }) {
   
   const [label, setLabel] = useState("");
   const [place, setPlace] = useState("");
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [photoSource, setPhotoSource] = useState(null);
@@ -40,14 +38,10 @@ export default function CreatePostsScreen({ }) {
     })();
   }, []);
 
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
 
   let enabled = label.length > 0 && place.length > 0 && hasPermission;
-
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-  };
 
   const takePhoto = async () => {
     if (cameraRef) {
@@ -65,27 +59,31 @@ export default function CreatePostsScreen({ }) {
   };
 
   const onSubmit = () => {
-    keyboardHide();
+    Keyboard.dismiss();
     if (enabled) {
-      setLabel("");
-      setPlace("");
-      setPhotoSource(null);
-      setLocation(null);
+      onDelete();
       navigation.navigate("Posts", {label, place, photoSource, location})      
     }
+  };
+
+  const onDelete = () => {
+    setLabel("");
+    setPlace("");
+    setPhotoSource(null);
+    setLocation(null);
   };
 
   if (hasPermission === null) { return <View /> };
   if (hasPermission === false) { return <Text>Permission to access the camera or location was denied  activeOpacity</Text> };
 
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
 
-      <View style={styles.container}>
+    <View style={styles.container}>
 
-        <View style={styles.photoContent}>
-          {/* camera */}
-          <View style={styles.cameraContainer}>
+      <View style={styles.photoContent}>
+        {/* camera */}
+        <View style={styles.cameraContainer}>
+          {isFocused &&
             <Camera
               style={styles.camera}
               ref={setCameraRef}
@@ -112,97 +110,87 @@ export default function CreatePostsScreen({ }) {
                 <MaterialIcons name="photo-camera" size={30} color={"#BDBDBD"} />
               </TouchableOpacity>
             </Camera>
-          </View>
-          {/* uploader */}
-          <TouchableOpacity
-            style={styles.uploader}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.uploaderText}>Завантажте фото</Text>
-          </TouchableOpacity>
-
+          }
         </View>
-
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 0}
+        {/* uploader */}
+        <TouchableOpacity
+          style={styles.uploader}
+          activeOpacity={0.8}
         >
-          {/* form */}
-          <View style={styles.form}>
-            {/* input label */}
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                placeholder="Назва..."
-                placeholderTextColor="#BDBDBD"
-                value={label}
-                onFocus={() => {
-                  setIsShowKeyboard(true);
-                }}
-                onBlur={() => setIsShowKeyboard(false)}
-                onChangeText={setLabel}
-              />
-            </View>
-            {/* input place */}
-            <View style={{
-              ...styles.inputWrapper,
-              marginTop: 16,
-              flexDirection: "row",
-              gap: 8,
-            }}>
-              <Feather name="map-pin" size={24} color="#BDBDBD" />
-              <TextInput
-                style={styles.input}
-                placeholder="Місцевість..."
-                placeholderTextColor="#BDBDBD"
-                value={place}
-                onFocus={() => {
-                  setIsShowKeyboard(true);
-                }}
-                onBlur={() => setIsShowKeyboard(false)}
-                onChangeText={setPlace}
-              />
-            </View>
-            {/* btn Submit */}
-            <TouchableOpacity
-              style={{
-                ...styles.btnForm,
-                backgroundColor: enabled ? "#FF6C00" : "#F6F6F6"
-              }}
-              activeOpacity={0.8}
-              onPress={onSubmit}
-              disabled={!enabled}
-            >
-              <Text style={{
-                ...styles.btnFormTitle,
-                color: enabled ? "#FFFFFF" : "#BDBDBD"
-              }}>Опублікувати</Text>
-            </TouchableOpacity>
-
-          </View>
-
-        </KeyboardAvoidingView>
-
-        {!isShowKeyboard
-          ? <TouchableOpacity
-            style={{
-              ...styles.btnForm,
-              height: 40,
-              width: 70,
-              padding: 8,
-
-              alignSelf: "center",
-              backgroundColor: "#F6F6F6"
-            }}
-            activeOpacity={0.8}
-          >
-            <Feather name="trash-2" size={24} color="#BDBDBD" />
-          </TouchableOpacity>
-          : null
-        }
+          <Text style={styles.uploaderText}>Завантажте фото</Text>
+        </TouchableOpacity>
 
       </View>
 
-    </TouchableWithoutFeedback>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'heigth'}
+      >
+        {/* form */}
+        <View style={styles.form}>
+          {/* input label */}
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Назва..."
+              placeholderTextColor="#BDBDBD"
+              value={label}
+              onChangeText={setLabel}
+            />
+          </View>
+          {/* input place */}
+          <View style={{
+            ...styles.inputWrapper,
+            marginTop: 16,
+            flexDirection: "row",
+            gap: 8,
+          }}>
+            <Feather name="map-pin" size={24} color="#BDBDBD" />
+            <TextInput
+              style={styles.input}
+              placeholder="Місцевість..."
+              placeholderTextColor="#BDBDBD"
+              value={place}
+              onChangeText={setPlace}
+            />
+          </View>
+          {/* btn Submit */}
+          <TouchableOpacity
+            style={{
+              ...styles.btnForm,
+              backgroundColor: enabled ? "#FF6C00" : "#F6F6F6"
+            }}
+            activeOpacity={0.8}
+            onPress={onSubmit}
+            disabled={!enabled}
+          >
+            <Text style={{
+              ...styles.btnFormTitle,
+              color: enabled ? "#FFFFFF" : "#BDBDBD"
+            }}>Опублікувати</Text>
+          </TouchableOpacity>
+
+        </View>
+      
+      </KeyboardAvoidingView>
+      
+      <TouchableOpacity
+        style={{
+          ...styles.btnForm,
+          marginBottom: 30,
+          height: 40,
+          width: 70,
+          padding: 8,
+          alignSelf: "center",
+          backgroundColor: "#F6F6F6"
+        }}
+        activeOpacity={0.8}
+        onPress={onDelete}
+      >
+        <Feather name="trash-2" size={24} color="#BDBDBD" />
+      </TouchableOpacity>
+   
+
+    </View>
   );
 };
 

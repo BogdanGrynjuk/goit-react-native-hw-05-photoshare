@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -24,16 +24,19 @@ export default function App() {
   }; 
 
   return (
-    <View style={styles.container}>
-      <NavigationContainer>
-        <MainStack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
-          <MainStack.Screen name='Login' component={LoginScreen}/>
-          <MainStack.Screen name='Register' component={RegistrationScreen}/>
-          <MainStack.Screen name='Home' component={Home}/>
-        </MainStack.Navigator>
-      </NavigationContainer>
-      <StatusBar style="auto" />
-    </View>
+    <TouchableWithoutFeedback style={{flex:1}} onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <NavigationContainer>
+          <MainStack.Navigator initialRouteName='Login' screenOptions={{ headerShown: false }}>
+            <MainStack.Screen name='Login' component={LoginScreen} />
+            <MainStack.Screen name='Register' component={RegistrationScreen} />
+            <MainStack.Screen name='Home' component={Home} />
+          </MainStack.Navigator>
+        </NavigationContainer>
+        <StatusBar style="auto" />
+      </View>
+    </TouchableWithoutFeedback>
+    
   );
 }
 

@@ -12,7 +12,6 @@ import {
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
-  TouchableWithoutFeedback
 } from "react-native";
 
 import { Feather } from '@expo/vector-icons';
@@ -22,168 +21,131 @@ export default function RegistrationScreen() {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  
   const [isFocusedLogin, setIsFocusedLogin] = useState(false);
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
   const [isVisiblePassword, setIsVisiblePassword] = useState(false);
 
   const navigation = useNavigation();
-
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-  };
   
   const onSubmit = () => {
     console.log(`login: ${login}, email: ${email}, password: ${password}`);
     setLogin("")
     setEmail("");
     setPassword("");
-    keyboardHide();
+    Keyboard.dismiss();
     navigation.navigate("Home");
   };
   
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-      
-      <View style={styles.container}>
-        {/* background */}
-        <ImageBackground
-          source={require("../assets/images/image-bg.jpg")}
-          style={styles.imageBackground}
-        >
+    <View style={styles.container}>
+      {/* background */}
+      <ImageBackground
+        source={require("../assets/images/image-bg.jpg")}
+        style={styles.imageBackground}
+      >
           
-          <View style={styles.wrapper}>
+        <View style={styles.wrapper}>
 
-            <View style={styles.avatar}>
-              <TouchableHighlight
-                style={styles.avatarBtn}
-                activeOpacity={0.8}
-                underlayColor="#ffffff"
-              >
-                <Feather name="plus-circle" size={25} color="#FF6C00" />
-              </TouchableHighlight>
-            </View>
-           
-            <View>
-              <Text style={styles.formTitle}>Реєстрація</Text>
-            </View>
-            {/* form */}
-            <View style={styles.form}>
-              <KeyboardAvoidingView
-                behavior={Platform.OS == "ios" ? "padding" : 0}
-              >
-                {/* input login */}
-                <View>
-                  <TextInput
-                    style={{
-                      ...styles.input,
-                      borderColor: isFocusedLogin ? "#FF6C00" : "#E8E8E8",
-                      backgroundColor: isFocusedLogin ? '#FFFFFF' : "#F6F6F6",
-                      color: "#212121",
-                    }}
-                    placeholder='Логін'
-                    onFocus={() => {
-                      setIsFocusedLogin(true);
-                      setIsShowKeyboard(true);
-                    }}
-                    onBlur={() => {
-                      setIsFocusedLogin(false);
-                      setIsShowKeyboard(false);
-                    }}
-                    value={login}
-                    onChangeText={setLogin}
-                  />
-                </View>
-                {/* input email */}
-                <View>
-                  <TextInput
-                    style={{
-                      ...styles.input,
-                      borderColor: isFocusedEmail ? "#FF6C00" : "#E8E8E8",
-                      backgroundColor: isFocusedEmail ? '#FFFFFF' : "#F6F6F6",
-                      color: "#212121",
-                    }}
-                    placeholder="Адреса електронної пошти"
-                    onFocus={() => {
-                      setIsFocusedEmail(true);
-                      setIsShowKeyboard(true);
-                    }}
-                    onBlur={() => {
-                      setIsFocusedEmail(false);
-                      setIsShowKeyboard(false);
-                    }}
-                    value={email}
-                    onChangeText={setEmail}
-                  />
-                </View>
-                {/* input password */}
-                <View style={{ position: "relative" }}>
-                  <TextInput
-                    style={{
-                      ...styles.input,
-                      borderColor: isFocusedPassword ? "#FF6C00" : "#E8E8E8",
-                      backgroundColor: isFocusedPassword ? "#FFFFFF" : "#F6F6F6",
-                      color: "#212121",
-                    }}
-                    placeholder='Пароль'
-                    secureTextEntry={!isVisiblePassword}
-                    onFocus={() => {
-                      setIsFocusedPassword(true);
-                      setIsShowKeyboard(true);
-                    }}
-                    onBlur={() => {
-                      setIsFocusedPassword(false);
-                      setIsShowKeyboard(false);
-                    }}
-                    value={password}
-                    onChangeText={setPassword}
-                  />
-                  <TouchableOpacity
-                    style={styles.btnToggle}
-                    activeOpacity={0.8}
-                    onPressIn={() => setIsVisiblePassword(true)}
-                    onPressOut={() => setIsVisiblePassword(false)}
-                  >
-                    <Text style={styles.btnToggleText}>Показати</Text>
-                  </TouchableOpacity>
-                </View>
-
-              </KeyboardAvoidingView>
-              {!isShowKeyboard
-                ? <View>
-                  {/* btn sign up */}
-                  <TouchableOpacity
-                    style={styles.btn}
-                    activeOpacity={0.8}
-                    onPress={onSubmit}
-                  >
-                    <Text style={styles.btnTitle}>Зареєструватись</Text>
-                  </TouchableOpacity>
-                  {/* link */}
-                  <TouchableOpacity
-                    style={styles.link}
-                    activeOpacity={0.8}
-                    onPress={() => navigation.navigate("Login")}
-                  >
-                    <Text style={styles.linkText}>
-                      Вже є акаунт? Увійти
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                : null
-              }
-            </View>
-
+          <View style={styles.avatar}>
+            <TouchableHighlight
+              style={styles.avatarBtn}
+              activeOpacity={0.8}
+              underlayColor="#ffffff"
+            >
+              <Feather name="plus-circle" size={25} color="#FF6C00" />
+            </TouchableHighlight>
           </View>
-        
-        </ImageBackground>
-
-      </View>
-
-    </TouchableWithoutFeedback>
+           
+          <View>
+            <Text style={styles.formTitle}>Реєстрація</Text>
+          </View>
+          {/* form */}
+          <View style={styles.form}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS == "ios" ? "padding" : 'height'}
+            >
+              {/* input login */}
+              <View>
+                <TextInput
+                  style={{
+                    ...styles.input,
+                    borderColor: isFocusedLogin ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocusedLogin ? '#FFFFFF' : "#F6F6F6",
+                    color: "#212121",
+                  }}
+                  placeholder='Логін'
+                  onFocus={() => setIsFocusedLogin(true)}
+                  onBlur={() => setIsFocusedLogin(false)}
+                  value={login}
+                  onChangeText={setLogin}
+                />
+              </View>
+              {/* input email */}
+              <View>
+                <TextInput
+                  style={{
+                    ...styles.input,
+                    borderColor: isFocusedEmail ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocusedEmail ? '#FFFFFF' : "#F6F6F6",
+                    color: "#212121",
+                  }}
+                  placeholder="Адреса електронної пошти"
+                  onFocus={() => setIsFocusedEmail(true)}
+                  onBlur={() => setIsFocusedEmail(false)}
+                  value={email}
+                  onChangeText={setEmail}
+                />
+              </View>
+              {/* input password */}
+              <View style={{ position: "relative" }}>
+                <TextInput
+                  style={{
+                    ...styles.input,
+                    borderColor: isFocusedPassword ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocusedPassword ? "#FFFFFF" : "#F6F6F6",
+                    color: "#212121",
+                  }}
+                  placeholder='Пароль'
+                  secureTextEntry={!isVisiblePassword}
+                  onFocus={() => setIsFocusedPassword(true)}
+                  onBlur={() => setIsFocusedPassword(false)}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity
+                  style={styles.btnToggle}
+                  activeOpacity={0.8}
+                  onPressIn={() => setIsVisiblePassword(true)}
+                  onPressOut={() => setIsVisiblePassword(false)}
+                >
+                  <Text style={styles.btnToggleText}>Показати</Text>
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>              
+            {/* btn sign up */}
+            <TouchableOpacity
+              style={styles.btn}
+              activeOpacity={0.8}
+              onPress={onSubmit}
+            >
+              <Text style={styles.btnTitle}>Зареєструватись</Text>
+            </TouchableOpacity>
+            {/* link */}
+            <TouchableOpacity
+              style={styles.link}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate("Login")}
+            >
+              <Text style={styles.linkText}>
+                Вже є акаунт? Увійти
+              </Text>
+            </TouchableOpacity>            
+          </View>
+        </View>
+      </ImageBackground>
+    </View>
   );
 };
 
